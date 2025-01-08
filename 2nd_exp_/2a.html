@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            height: 200px;;
+            width:500px;
+            size:;
+        }
+        td {
+            text-align: center;
+        }
+        .table {
+            align-items: center;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>HTML Tables Demostration</h1>
+    <h2>Basic Table</h2>
+    <div class="table">
+        <table border="1"> 
+            <tr>
+                <th>column 1</th>
+                <th>column 2</th>
+                <th>column 3</th>
+            </tr>
+            <tr>
+                <td>Row 1,Cell 1</td>
+                <td>Row 1,Cell 2</td>
+                <td>Row 1,Cell 3</td>
+            </tr>
+            <tr>
+                <td>Row 2,Cell 1</td>
+                <td>Row 2,Cell 2</td>
+                <td>Row 2,Cell 3</td>
+            </tr>
+        </table>
+    </div>
+    <h2>Table with Rowspan and colspan</h2>
+    <div class="table">
+        <table border="1">
+            <tr>
+                <th>Header 1</th>
+                <th>Header 2</th>
+                <th>Header 3</th>
+            </tr>
+            <tr>
+                <td rowspan="2">Row 1 and 2,Cell 1</td>
+                <td>Row 1,Cell 2</td>
+                <td>Row 1,cell 3</td>
+            </tr>
+            <tr>
+                <td colspan="2">Row 2,Merged Cells</td>
+            </tr>
+            <tr>
+                <td>Row 3,Cell 1</td>
+                <td>Row 3,Cell 2</td>
+                <td>Row 3,Cell 3</td>
+            </tr>
+        </table>
+    </div>
+    
+</body>
+</html>
