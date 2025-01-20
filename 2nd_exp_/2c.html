@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color:rgb(255, 254, 247);
+
+        }
+        .Register {
+            width:  50%;
+            margin: 50px auto;
+            padding: 20px;
+            
+        }
+        table {
+            border-collapse: collapse;
+            margin-left: 200px;
+        }
+        th {
+            background-color:rgb(189, 189, 189);
+            text-align: left;
+        }
+        td {
+            margin-left: 20px;
+            padding: 2%;
+        }
+        textarea {
+            width: 250px;
+            height: 50px;
+        }
+        h1 {
+            text-align: center;
+        }
+        h3 {
+            text-align: center;
+        }
+        .a {
+            display: inline-block;
+            margin-left: 400px;
+        }
+        .b {
+            display: inline-block;
+            margin-left: 30px;
+        }
+        #c {
+            background-color: rgb(252, 168, 168);
+        }
+        #d {
+            background-color: rgb(177, 177, 255);
+        }
+    </style>
+</head>
+<body>
+    <div class="Register">
+        <h1>Registration Form</h1>
+        <h3>Fill the form</h3>
+        <form action="">
+            <table border="1" style="width: 500px; background-color:rgb(255, 254, 247);">
+                <tr>
+                    <th>Full Name:</td>
+                    <td>
+                        <input type="text" placeholder="Enter your full name">
+                    </td>
+                </tr>
+                <tr>
+                    <th>Password:</td>
+                    <td>
+                        <input type="text" placeholder="Enter your password">
+                    </td>
+                </tr>
+                <tr>
+                    <th>Age:</td>
+                    <td><input type="number" placeholder="Enter your age"></td>
+                </tr>
+                <tr>
+                    <th>Date of Birth:</td>
+                    <td>
+                        <input type="date">
+                    </td>
+                </tr>
+                <tr>
+                    <th>Gender:</td>
+                    <td>
+                        <input type="radio" name="Gender">
+                        <label for="Gender">Male</label>
+                        <input type="radio" name="Gender">
+                        <label for="Gender">Female</label>
+                        <input type="radio" name="Gender">
+                        <label for="Gender">Other</label>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Hobbies:</th>
+                    <td>
+                        <input type="checkbox" name="Hobbies">
+                        <label for="Hobbies">Reading</label>
+                        <input type="checkbox" name="Hobbies">
+                        <label for="Hobbies">Sports</label>
+                        <input type="checkbox" name="Hobbies">
+                        <label for="Hobbies">Traveling</label>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Country:</th>
+                    <td>
+                        <select name="Country">
+                            <option value="">Select your country</option>
+                            <option value="India">India</option>
+                            <option value="USA">USA</option>
+                            <option value="UK">UK</option>
+                            <option value="Pakistan">Pakistan</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>About Yourself:</th>
+                    <td>
+                        <textarea name="about">write about yourself...</textarea>
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <div class="a" >
+                <input type="button" value="Submit" id="c">
+            </div>
+            <div class="b">
+                <input type="button" value="Reset"  id="d">
+            </div>
+        </form>
+    </div>
+</body>
+</html>
