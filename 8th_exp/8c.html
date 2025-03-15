@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="/8th_exp/8c.js" async></script>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: bold;
+        }
+        .io {
+            text-align: center;
+            gap: 20px;
+            display: flex;
+            flex-direction: row;
+            margin-left: 30vw;
+        }
+        #number {
+            background-color: rgb(119, 148, 254);
+            font-weight: bold;
+            color: rgb(255, 246, 246);
+            border-radius: 15px;
+        }
+        #output {
+            border:solid 5px rgb(119, 148, 254);
+            padding: 10px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Print Numbers from 1 to 10 using Loops</h1>
+    <div class="io">
+        <button id="number" onclick="forLoop()">For Loop</button>
+        <button id="number" onclick="whileLoop()">While Loop</button>
+        <button id="number" onclick="doWhileLoop()">Do-While Loop</button>
+        <p id="output">Click the button to enter the number.</p>
+    </div>
+</body>
+</html>
