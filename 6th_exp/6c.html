@@ -1,0 +1,113 @@
+<!-- Write a program to explain the different ways for taking input. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            text-align: center;
+        }
+        .InputSection {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            background-color: aqua;
+            border-radius: 32px;
+            width: 50vw;
+            margin-left: 25vw;
+        }
+    </style>
+</head>
+<body>
+    <h1>JavaScript Input methods</h1>
+    <div class="InputSection">
+        <!-- Using prompt() -->
+    <div class="input-method">
+        <h2>Using prompt</h2>
+        <button id="submit" onclick="usingPrompt()">Using Prompt</button>
+        <p id="output1"></p>
+    </div>
+    <!-- Using input fields -->
+    <div class="input-method">
+        <h2>Using input fields</h2>
+        <input type="text" id="inputField" placeholder="Enter a number">
+        <button id="submit" onclick="usingInputFields()">Submit</button>
+        <p id="output2"></p>
+    </div>
+    <!-- Using Forms -->
+    <div class="input-method">
+        <h2>Using forms</h2>
+        <form id="form" onsubmit="handleForm(event)">
+            <input type="text" id="formInput" placeholder="Enter a number">
+            <button id="submit" type="submit">Submit</button>
+        </form>
+        <p id="output3"></p>
+    </div>
+    <!-- Using console input(for demostration process) -->
+    <div class="input-method">
+        <h2>Using console input</h2>
+        <button id="submit" onclick="consoleInput()">Try console Input</button>
+        <p id="output4"></p>
+    </div>
+    </div>
+    
+
+    <script>
+        // Using prompt()
+        function usingPrompt()
+        {
+            const userinput=prompt("Enter a number:");
+            const number=parseFloat(userinput);
+            if(isNaN(number)) {
+                document.getElementById("output1").innerHTML="Please enter a valid number:";
+            }
+            else if(number%2===0) {
+                document.getElementById("output1").innerHTML=`${number} is Even`;
+            }
+            else {
+                document.getElementById("output1").innerHTML=`${number} is Odd`;
+            }
+        }
+
+        // Using Inpput fileds d="inputField"
+        function usingInputFields() {
+            const userinput=document.getElementById("inputField").value;
+            const number=parseFloat(userinput);
+            if(isNaN(number)) {
+                document.getElementById("output2").innerHTML="Please enter a valid number:";
+            }
+            else if(number%2===0) {
+                document.getElementById("output2").innerHTML= `${number} is Even`;
+            }
+            else {
+                document.getElementById("output2").innerHTML= `${number} is odd`;
+            }
+        }
+
+        // Using forms
+        function handleForm(event) {
+            event.preventDefault();
+            const userinput=document.getElementById("formInput").value;
+            const number=parseFloat(userinput);
+            if(isNaN(number)) {
+                document.getElementById("output3").innerHTML="Please enter a vlaid number:";
+            }
+            else if(number%2===0) {
+                document.getElementById("output3").innerHTML= `${number} is Even`;
+            }
+            else {
+                document.getElementById("output3").innerHTML= `${number} is odd`;
+            }
+        }
+
+        // Using console input
+        function consoleInput() {
+            const userinput="This is simulated from the console input.";
+            console.log("Simulated input:",userinput);
+            document.getElementById("output4").innerHTML="check the console for the simulated Input.";
+        }
+    </script>
+</body>
+</html>
