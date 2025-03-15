@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* Simple Selectors */
+        h1 {
+            color: blue;
+        }
+        #unique {
+            color: red;
+            font-weight: bold;
+        }
+        .highlight {
+            background-color: yellow;
+            font-style: italic;
+            font-weight: bold;
+        }
+        h2,p {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        * {
+            text-align: center;
+        }
+        /* Combinational selectors  */
+        div p {
+            color: green;
+        }
+        div > p {
+            font-weight: bold;
+        }
+        h2+p {
+            color:orange;
+        }
+        h2~p {
+            font-style: italic;
+        }
+
+        /* Pseudo class selectors */
+        a.hover {
+            color: red;
+        }
+        p::first-letter {
+            font-size: 24px;
+            font-weight: bold;
+            color: brown;
+        }
+        p::first-line {
+            font-weight: bold;
+        }
+        p::after {
+            content:"(Read more...)";
+            color:gray;
+        }
+
+        /* Attribute selector*/
+        input[type="text"] {
+            border:2px solid red;
+            padding:5px;
+        }
+        [title] {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1 >Simple Selectors</h1>
+    <p id="unique">This is an ID selector example.</p>
+    <p class="highlight">This is a class Selecor example.</p>
+    
+    <h2>Combinator Selectors</h2>
+    <div>
+        <p>This paragraph is inside a div(descendant selector)</p>
+        <p>This is a direct child paragraph (child selector)</p>
+    </div>
+
+    <h2>Pseudo-Class & pseudo Element Selectors</h2>
+    <a href="#">Hover over this link</a>
+    <p>First letter is styled with pseudo element tag</p>
+    <input type="text" placeholder="Click here and see the effect">
+
+    <h2>Attribute Selectors</h2>
+    <p title="Full Stack Development">This paragrah has a title attribute</p>
+    <input type="text" placeholder="Styled input field">
+</body>
+</html>
