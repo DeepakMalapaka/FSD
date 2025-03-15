@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="/8th_exp/8f.js"></script>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: bold;
+        }
+        .io {
+            text-align: center;
+            gap: 20px;
+            display: flex;
+            flex-direction: row;
+            margin-left: 35vw;
+        }
+        #number {
+            background-color: rgb(119, 148, 254);
+            font-weight: bold;
+            color: rgb(255, 246, 246);
+            border-radius: 15px;
+        }
+        #output {
+            border:solid 5px rgb(119, 148, 254);
+            padding: 10px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Denomination Calculator</h1>
+    <div class="io">
+        <button id="number" onclick="DenominationCalculator()">Enter Number</button>
+        <p id="output">Click the button to enter the number.</p>
+    </div>
+</body>
+</html>
