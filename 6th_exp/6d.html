@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            text-align: center;
+        }
+        #input {
+            background-color: rgba(0, 255, 157, 0.322);
+            color: black;
+            padding: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome Voting Evaluation</h1>
+    <div class="InputSection">
+        <button id="input" onclick="usingPrompt()">Click Here</button>
+        <p id="output"></p>
+    </div>
+    <script>
+        // The prompt
+        function usingPrompt()
+        {
+            const userinput=prompt("Enter your age here:");
+            const age=parseInt(userinput);
+            if(isNaN(age)) {
+                document.getElementById("output").innerHTML="Please enter age in numbers:"
+            }
+            else if(age<18) {
+                document.getElementById("output").innerHTML=`You are not eligible to vote.Because you are still ${age} years old!`;
+            }
+            else {
+                document.getElementById("output").innerHTML="You are eligible to vote...";
+            }
+        }
+    </script>
+</body>
+</html>
