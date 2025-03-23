@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Event Sync</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #667eea;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .login-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header img {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 2px solid #e2e8f0;
+        }
+
+        .login-header h1 {
+            color: #2d3748;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .form-group label {
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .forgot-password a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .error-message {
+            color: #c53030;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .login-header h1 {
+                font-size: 1.6rem;
+            }
+
+            .login-header img {
+                width: 70px;
+                height: 70px;
+            }
+
+            .back-button {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="First.html" class="back-button">
+        ← Back to Home
+    </a>
+    <div class="login-container">
+        <div class="login-header">
+            <img src="Photos/Admin.png" alt="Admin">
+            <h1>Admin Login</h1>
+        </div>
+        <form class="login-form" id="adminLoginForm" onsubmit="return validateLogin(event)">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your email">
+                <div class="error-message" id="emailError"></div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Enter your password">
+                <div class="error-message" id="passwordError"></div>
+            </div>
+            <button type="submit" class="login-button">Login</button>
+            <div class="forgot-password">
+                <a href="#">Forgot Password?</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Admin credentials
+        const adminCredentials = {
+            email: "admin@eventsync.com",
+            password: "admin123"
+        };
+
+        function validateLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const emailError = document.getElementById('emailError');
+            const passwordError = document.getElementById('passwordError');
+
+            // Reset error messages
+            emailError.style.display = 'none';
+            passwordError.style.display = 'none';
+
+            // Validate email
+            if (email !== adminCredentials.email) {
+                emailError.textContent = 'Invalid email address';
+                emailError.style.display = 'block';
+                return false;
+            }
+
+            // Validate password
+            if (password !== adminCredentials.password) {
+                passwordError.textContent = 'Invalid password';
+                passwordError.style.display = 'block';
+                return false;
+            }
+
+            // If credentials are correct, redirect to dashboard
+            window.location.href = 'admin_dashboard.html';
+            return false;
+        }
+    </script>
+</body>
+</html>

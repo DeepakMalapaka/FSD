@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Event - Event Sync</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f7fafc;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 1.5rem;
+        }
+
+        .back-button {
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+
+        .form-title {
+            color: #2d3748;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .submit-btn {
+            background: #667eea;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background: #5a67d8;
+        }
+
+        .success-message {
+            display: none;
+            background: #c6f6d5;
+            color: #2f855a;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .container {
+                margin: 1rem auto;
+            }
+
+            .form-container {
+                padding: 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Add New Event</h1>
+        <a href="admin_dashboard.html" class="back-button">Back to Dashboard</a>
+    </div>
+
+    <div class="container">
+        <div class="success-message" id="successMessage">
+            Event added successfully! Redirecting to dashboard...
+        </div>
+        <div class="form-container">
+            <h2 class="form-title">Event Details</h2>
+            <form id="eventForm" onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label for="event-name">Event Name</label>
+                    <input type="text" id="event-name" name="event-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="event-venue">Event Venue</label>
+                    <input type="text" id="event-venue" name="event-venue" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="event-date">Date</label>
+                        <input type="date" id="event-date" name="event-date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="event-time">Time</label>
+                        <input type="time" id="event-time" name="event-time" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="event-eligibility">Eligibility</label>
+                    <select id="event-eligibility" name="event-eligibility" required>
+                        <option value="">Select Eligibility</option>
+                        <option value="all">All Students</option>
+                        <option value="engineering">Engineering Students</option>
+                        <option value="science">Science Students</option>
+                        <option value="arts">Arts Students</option>
+                        <option value="commerce">Commerce Students</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="event-description">Event Description</label>
+                    <textarea id="event-description" name="event-description" rows="4" required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Add Event</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Check if we're editing an existing event
+        const editingIndex = localStorage.getItem('editingEventIndex');
+        if (editingIndex !== null) {
+            document.querySelector('.form-title').textContent = 'Edit Event';
+            const events = JSON.parse(localStorage.getItem('events') || '[]');
+            const event = events[editingIndex];
+            
+            // Fill form with existing event data
+            document.getElementById('event-name').value = event.name;
+            document.getElementById('event-venue').value = event.venue;
+            document.getElementById('event-date').value = event.date;
+            document.getElementById('event-time').value = event.time;
+            document.getElementById('event-eligibility').value = event.eligibility;
+            document.getElementById('event-description').value = event.description || '';
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+
+            // Get form values
+            const eventData = {
+                name: document.getElementById('event-name').value,
+                venue: document.getElementById('event-venue').value,
+                date: document.getElementById('event-date').value,
+                time: document.getElementById('event-time').value,
+                eligibility: document.getElementById('event-eligibility').value,
+                description: document.getElementById('event-description').value,
+                registeredStudents: []
+            };
+
+            // Get existing events
+            let events = JSON.parse(localStorage.getItem('events') || '[]');
+
+            if (editingIndex !== null) {
+                // Update existing event
+                events[editingIndex] = eventData;
+                localStorage.removeItem('editingEventIndex');
+            } else {
+                // Add new event
+                events.push(eventData);
+            }
+
+            // Save to localStorage
+            localStorage.setItem('events', JSON.stringify(events));
+
+            // Show success message
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block';
+
+            // Redirect to dashboard after 2 seconds
+            setTimeout(() => {
+                window.location.href = 'admin_dashboard.html';
+            }, 2000);
+        }
+    </script>
+</body>
+</html> 

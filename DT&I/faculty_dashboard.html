@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Dashboard - Event Sync</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f7fafc;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: white;
+            height: 100vh;
+            position: fixed;
+            padding: 2rem 1rem;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo-section img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+        }
+
+        .nav-item {
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #4a5568;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .nav-item i {
+            width: 20px;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-title {
+            color: #2d3748;
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-info h3 {
+            color: #4a5568;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-info p {
+            color: #2d3748;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .event-card {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s;
+        }
+
+        .event-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .event-details {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .event-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #4a5568;
+        }
+
+        .event-detail i {
+            color: #667eea;
+        }
+
+        .view-students-btn {
+            background: #667eea;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+            margin-top: 1rem;
+        }
+
+        .view-students-btn:hover {
+            background: #5a67d8;
+        }
+
+        .students-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .students-modal-content {
+            background: white;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 8px;
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #4a5568;
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group {
+            flex: 1;
+        }
+
+        .filter-group label {
+            display: block;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .students-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .students-table th,
+        .students-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .students-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .students-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .year-section {
+            margin-top: 2rem;
+        }
+
+        .year-section h3 {
+            color: #2d3748;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+                padding: 1rem 0.5rem;
+            }
+
+            .logo-section img {
+                width: 40px;
+                height: 40px;
+            }
+
+            .nav-item span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 60px;
+                padding: 1rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-section {
+                flex-direction: column;
+            }
+
+            .students-modal-content {
+                margin: 1rem;
+                padding: 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo-section">
+            <img src="Photos/Faculty.png" alt="Faculty Logo">
+            <h3>Event Sync</h3>
+        </div>
+        <div class="nav-item active" onclick="showSection('home')">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="showSection('events')">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Events</span>
+        </div>
+        <div class="nav-item" onclick="showSection('registrations')">
+            <i class="fas fa-users"></i>
+            <span>Registrations</span>
+        </div>
+        <div class="nav-item" onclick="openAttendancePortal()">
+            <i class="fas fa-clipboard-check"></i>
+            <span>Attendance Marking</span>
+        </div>
+        <div class="nav-item" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Faculty Dashboard</h1>
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <span>Faculty</span>
+            </div>
+        </div>
+
+        <!-- Home Section -->
+        <div class="content-section active" id="home">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #ebf8ff; color: #3182ce;">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Active Events</h3>
+                        <p id="activeEventsCount">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #f0fff4; color: #38a169;">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Registrations</h3>
+                        <p id="totalRegistrations">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #fff5f5; color: #e53e3e;">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Upcoming Events</h3>
+                        <p id="upcomingEvents">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="section-title">Current Events</div>
+            <div class="events-grid" id="currentEventsGrid">
+                <!-- Current events will be displayed here -->
+            </div>
+        </div>
+
+        <!-- Events Section -->
+        <div class="content-section" id="events">
+            <div class="section-title">All Events</div>
+            <div class="events-grid" id="eventsGrid">
+                <!-- All events will be displayed here -->
+            </div>
+        </div>
+
+        <!-- Registrations Section -->
+        <div class="content-section" id="registrations">
+            <div class="section-title">Event Registrations</div>
+            <div class="events-grid" id="registrationsGrid">
+                <!-- Events with registration details will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Students Modal -->
+    <div class="students-modal" id="studentsModal">
+        <div class="students-modal-content">
+            <button class="close-btn" onclick="closeStudentsModal()">&times;</button>
+            <h2 id="modalEventName">Event Students</h2>
+            <div class="filter-section">
+                <div class="filter-group">
+                    <label for="yearFilter">Filter by Year</label>
+                    <select id="yearFilter" onchange="filterStudents()">
+                        <option value="">All Years</option>
+                        <option value="1">1st Year</option>
+                        <option value="2">2nd Year</option>
+                        <option value="3">3rd Year</option>
+                        <option value="4">4th Year</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="sectionFilter">Filter by Section</label>
+                    <select id="sectionFilter" onchange="filterStudents()">
+                        <option value="">All Sections</option>
+                        <option value="A">Section A</option>
+                        <option value="B">Section B</option>
+                        <option value="C">Section C</option>
+                    </select>
+                </div>
+            </div>
+            <div id="studentsList">
+                <!-- Students will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to show different sections
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Update content based on section
+            if (sectionId === 'registrations') {
+                displayRegistrations();
+            }
+        }
+
+        // Function to format date
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+
+        // Function to format time
+        function formatTime(timeString) {
+            return timeString.substring(0, 5);
+        }
+
+        // Function to get eligibility text
+        function getEligibilityText(value) {
+            const eligibilityMap = {
+                'all': 'All Students',
+                'engineering': 'Engineering Students',
+                'science': 'Science Students',
+                'arts': 'Arts Students',
+                'commerce': 'Commerce Students'
+            };
+            return eligibilityMap[value] || value;
+        }
+
+        // Function to update statistics
+        function updateStats() {
+            const events = JSON.parse(localStorage.getItem('events') || '[]');
+            const today = new Date();
+
+            const activeEvents = events.filter(event => {
+                const eventDate = new Date(event.date);
+                return eventDate >= today;
+            });
+
+            const upcomingEvents = events.filter(event => {
+                const eventDate = new Date(event.date);
+                return eventDate > today;
+            });
+
+            const totalRegistrations = events.reduce((total, event) => {
+                return total + (event.registeredStudents?.length || 0);
+            }, 0);
+
+            document.getElementById('activeEventsCount').textContent = activeEvents.length;
+            document.getElementById('upcomingEvents').textContent = upcomingEvents.length;
+            document.getElementById('totalRegistrations').textContent = totalRegistrations;
+        }
+
+        // Function to display events
+        function displayEvents() {
+            const eventsGrid = document.getElementById('eventsGrid');
+            const currentEventsGrid = document.getElementById('currentEventsGrid');
+            const events = JSON.parse(localStorage.getItem('events') || '[]');
+            const today = new Date();
+
+            if (events.length === 0) {
+                eventsGrid.innerHTML = '<div class="no-events">No events available at the moment.</div>';
+                currentEventsGrid.innerHTML = '<div class="no-events">No current events available.</div>';
+                return;
+            }
+
+            const eventCardHTML = (event, index) => {
+                const eventDate = new Date(event.date);
+                const isPastEvent = eventDate < today;
+                const registrationCount = event.registeredStudents?.length || 0;
+
+                return `
+                    <div class="event-card">
+                        <h3>${event.name}</h3>
+                        <div class="event-details">
+                            <div class="event-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>${event.venue}</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-clock"></i>
+                                <span>${formatTime(event.time)}</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-calendar"></i>
+                                <span>${formatDate(event.date)}</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-users"></i>
+                                <span>${getEligibilityText(event.eligibility)}</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-user-check"></i>
+                                <span>${registrationCount} Registrations</span>
+                            </div>
+                        </div>
+                        <button 
+                            onclick="viewStudents(${index})" 
+                            class="view-students-btn"
+                        >
+                            View Registered Students
+                        </button>
+                    </div>
+                `;
+            };
+
+            eventsGrid.innerHTML = events.map((event, index) => eventCardHTML(event, index)).join('');
+            currentEventsGrid.innerHTML = events
+                .filter(event => new Date(event.date) >= today)
+                .map((event, index) => eventCardHTML(event, index))
+                .join('');
+            updateStats();
+        }
+
+        // Function to display registrations
+        function displayRegistrations() {
+            const registrationsGrid = document.getElementById('registrationsGrid');
+            const events = JSON.parse(localStorage.getItem('events') || '[]');
+            const today = new Date();
+
+            if (events.length === 0) {
+                registrationsGrid.innerHTML = '<div class="no-events">No events with registrations available.</div>';
+                return;
+            }
+
+            const eventCardHTML = (event, index) => {
+                const eventDate = new Date(event.date);
+                const isPastEvent = eventDate < today;
+                const registrationCount = event.registeredStudents?.length || 0;
+
+                return `
+                    <div class="event-card">
+                        <h3>${event.name}</h3>
+                        <div class="event-details">
+                            <div class="event-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>${event.venue}</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-clock"></i>
+                                <span>${formatTime(event.time)}</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-calendar"></i>
+                                <span>${formatDate(event.date)}</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-users"></i>
+                                <span>${registrationCount} Registrations</span>
+                            </div>
+                        </div>
+                        <button 
+                            onclick="viewStudents(${index})" 
+                            class="view-students-btn"
+                        >
+                            View Registered Students
+                        </button>
+                    </div>
+                `;
+            };
+
+            registrationsGrid.innerHTML = events
+                .filter(event => event.registeredStudents?.length > 0)
+                .map((event, index) => eventCardHTML(event, index))
+                .join('');
+        }
+
+        // Function to view students
+        function viewStudents(eventIndex) {
+            const events = JSON.parse(localStorage.getItem('events') || '[]');
+            const event = events[eventIndex];
+            const students = event.registeredStudents || [];
+
+            document.getElementById('modalEventName').textContent = `${event.name} - Registered Students`;
+            document.getElementById('studentsModal').style.display = 'block';
+            displayStudentsList(students);
+        }
+
+        // Function to display students list
+        function displayStudentsList(students) {
+            const studentsList = document.getElementById('studentsList');
+            const yearFilter = document.getElementById('yearFilter').value;
+            const sectionFilter = document.getElementById('sectionFilter').value;
+
+            // Filter students based on selected filters
+            let filteredStudents = students;
+            if (yearFilter) {
+                filteredStudents = filteredStudents.filter(student => student.year === yearFilter);
+            }
+            if (sectionFilter) {
+                filteredStudents = filteredStudents.filter(student => student.section === sectionFilter);
+            }
+
+            // Group students by year
+            const studentsByYear = {};
+            filteredStudents.forEach(student => {
+                if (!studentsByYear[student.year]) {
+                    studentsByYear[student.year] = [];
+                }
+                studentsByYear[student.year].push(student);
+            });
+
+            // Generate HTML for each year
+            let html = '';
+            Object.keys(studentsByYear).sort().forEach(year => {
+                html += `
+                    <div class="year-section">
+                        <h3>${year}${getYearSuffix(year)} Year Students</h3>
+                        <table class="students-table">
+                            <thead>
+                                <tr>
+                                    <th>Roll Number</th>
+                                    <th>Name</th>
+                                    <th>Section</th>
+                                    <th>Branch</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${studentsByYear[year].map(student => `
+                                    <tr>
+                                        <td>${student.rollNumber}</td>
+                                        <td>${student.name}</td>
+                                        <td>${student.section}</td>
+                                        <td>${student.branch}</td>
+                                        <td>${student.email}</td>
+                                        <td>${student.phoneNumber}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            });
+
+            studentsList.innerHTML = html;
+        }
+
+        // Function to filter students
+        function filterStudents() {
+            const events = JSON.parse(localStorage.getItem('events') || '[]');
+            const currentEvent = events[document.getElementById('eventId').value];
+            displayStudentsList(currentEvent.registeredStudents || []);
+        }
+
+        // Function to get year suffix
+        function getYearSuffix(year) {
+            const suffixes = ['st', 'nd', 'rd', 'th'];
+            return suffixes[year - 1] || 'th';
+        }
+
+        // Function to close students modal
+        function closeStudentsModal() {
+            document.getElementById('studentsModal').style.display = 'none';
+        }
+
+        // Function to open attendance portal
+        function openAttendancePortal() {
+            window.open('https://vishnu.ac.in/Default.aspx?ReturnUrl=%2f', '_blank');
+        }
+
+        // Function to logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = 'First.html';
+            }
+        }
+
+        // Display events when the page loads
+        window.onload = function() {
+            displayEvents();
+        };
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('studentsModal');
+            if (event.target === modal) {
+                closeStudentsModal();
+            }
+        }
+    </script>
+</body>
+</html> 

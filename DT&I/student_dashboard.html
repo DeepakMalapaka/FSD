@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Event Sync</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f7fafc;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: white;
+            height: 100vh;
+            position: fixed;
+            padding: 2rem 1rem;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo-section img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+        }
+
+        .nav-item {
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #4a5568;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .nav-item i {
+            width: 20px;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-title {
+            color: #2d3748;
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-info h3 {
+            color: #4a5568;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-info p {
+            color: #2d3748;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .event-card {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s;
+        }
+
+        .event-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .event-details {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .event-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #4a5568;
+        }
+
+        .event-detail i {
+            color: #667eea;
+        }
+
+        .register-btn {
+            background: #667eea;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+            margin-top: 1rem;
+        }
+
+        .register-btn:hover {
+            background: #5a67d8;
+        }
+
+        .register-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #4a5568;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .success-message {
+            display: none;
+            background: #c6f6d5;
+            color: #2f855a;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .profile-section {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .profile-info {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .profile-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .profile-item label {
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .profile-item span {
+            color: #2d3748;
+        }
+
+        .event-status {
+            margin-top: 1rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .event-status.upcoming {
+            background: #ebf8ff;
+            color: #3182ce;
+        }
+
+        .event-status.completed {
+            background: #f7fafc;
+            color: #4a5568;
+        }
+
+        .event-status i {
+            margin-right: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+                padding: 1rem 0.5rem;
+            }
+
+            .logo-section img {
+                width: 40px;
+                height: 40px;
+            }
+
+            .nav-item span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 60px;
+                padding: 1rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo-section">
+            <img src="Photos/Student.webp" alt="Student Logo">
+            <h3>Event Sync</h3>
+        </div>
+        <div class="nav-item active" onclick="showSection('home')">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="showSection('events')">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Events</span>
+        </div>
+        <div class="nav-item" onclick="showSection('my-events')">
+            <i class="fas fa-list"></i>
+            <span>My Events</span>
+        </div>
+        <div class="nav-item" onclick="showSection('profile')">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </div>
+        <div class="nav-item" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Student Dashboard</h1>
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <span id="studentName">Student</span>
+            </div>
+        </div>
+
+        <!-- Home Section -->
+        <div class="content-section active" id="home">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #ebf8ff; color: #3182ce;">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Registered Events</h3>
+                        <p id="registeredEventsCount">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #f0fff4; color: #38a169;">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Upcoming Events</h3>
+                        <p id="upcomingEventsCount">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #fff5f5; color: #e53e3e;">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Past Events</h3>
+                        <p id="pastEventsCount">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="section-title">Recent Events</div>
+            <div class="events-grid" id="recentEventsGrid">
+                <!-- Recent events will be displayed here -->
+            </div>
+        </div>
+
+        <!-- Events Section -->
+        <div class="content-section" id="events">
+            <div class="section-title">Available Events</div>
+            <div class="events-grid" id="eventsGrid">
+                <!-- All events will be displayed here -->
+            </div>
+        </div>
+
+        <!-- My Events Section -->
+        <div class="content-section" id="my-events">
+            <div class="section-title">My Registered Events</div>
+            <div class="events-grid" id="myEventsGrid">
+                <!-- Student's registered events will be displayed here -->
+            </div>
+        </div>
+
+        <!-- Profile Section -->
+        <div class="content-section" id="profile">
+            <div class="section-title">My Profile</div>
+            <div class="profile-section">
+                <div class="profile-info">
+                    <div class="profile-item">
+                        <label>Roll Number</label>
+                        <span id="profileRollNumber"></span>
+                    </div>
+                    <div class="profile-item">
+                        <label>Name</label>
+                        <span id="profileName"></span>
+                    </div>
+                    <div class="profile-item">
+                        <label>Email</label>
+                        <span id="profileEmail"></span>
+                    </div>
+                    <div class="profile-item">
+                        <label>Branch</label>
+                        <span id="profileBranch"></span>
+                    </div>
+                    <div class="profile-item">
+                        <label>Year</label>
+                        <span id="profileYear"></span>
+                    </div>
+                    <div class="profile-item">
+                        <label>Section</label>
+                        <span id="profileSection"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registration Modal -->
+    <div class="modal" id="registrationModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <h2>Event Registration</h2>
+            <form id="registrationForm" onsubmit="handleRegistration(event)">
+                <input type="hidden" id="eventId">
+                <div class="form-group">
+                    <label for="studentName">Full Name</label>
+                    <input type="text" id="studentName" required>
+                </div>
+                <div class="form-group">
+                    <label for="rollNumber">Roll Number</label>
+                    <input type="text" id="rollNumber" required>
+                </div>
+                <div class="form-group">
+                    <label for="phoneNumber">Phone Number</label>
+                    <input type="tel" id="phoneNumber" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="year">Year of Study</label>
+                    <select id="year" required>
+                        <option value="">Select Year</option>
+                        <option value="1">1st Year</option>
+                        <option value="2">2nd Year</option>
+                        <option value="3">3rd Year</option>
+                        <option value="4">4th Year</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="branch">Branch</label>
+                    <select id="branch" required>
+                        <option value="">Select Branch</option>
+                        <option value="CSE">Computer Science</option>
+                        <option value="ECE">Electronics</option>
+                        <option value="MECH">Mechanical</option>
+                        <option value="CIVIL">Civil</option>
+                        <option value="IT">Information Technology</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="section">Section</label>
+                    <input type="text" id="section" required>
+                </div>
+                <button type="submit" class="register-btn">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Function to show different sections
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Update content based on section
+            if (sectionId === 'my-events') {
+                displayMyEvents();
+            } else if (sectionId === 'profile') {
+                updateProfile();
+            }
+        }
+
+        // Function to format date
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+
+        // Function to format time
+        function formatTime(timeString) {
+            return timeString.substring(0, 5);
+        }
+
+        // Function to get eligibility text
+        function getEligibilityText(value) {
+            const eligibilityMap = {
+                'all': 'All Students',
+                'engineering': 'Engineering Students',
+                'science': 'Science Students',
+                'arts': 'Arts Students',
+                'commerce': 'Commerce Students'
+            };
+            return eligibilityMap[value] || value;
+        }
+
+        // Function to update statistics
+        function updateStats() {
+            const events = JSON.parse(localStorage.getItem('events') || '[]');
+            const studentRollNumber = localStorage.getItem('studentRollNumber');
+            const today = new Date();
+
+            const registeredEvents = events.filter(event => 
+                event.registeredStudents?.some(student => student.rollNumber === studentRollNumber)
+            );
+
+            const upcomingEvents = registeredEvents.filter(event => {
+                const eventDate = new Date(event.date);
+                return eventDate > today;
+            });
+
+            const pastEvents = registeredEvents.filter(event => {
+                const eventDate = new Date(event.date);
+                return eventDate < today;
+            });
+
+            document.getElementById('registeredEventsCount').textContent = registeredEvents.length;
+            document.getElementById('upcomingEventsCount').textContent = upcomingEvents.length;
+            document.getElementById('pastEventsCount').textContent = pastEvents.length;
+        }
+
+        // Function to display events
+        function displayEvents() {
+            const eventsGrid = document.getElementById('eventsGrid');
+            const recentEventsGrid = document.getElementById('recentEventsGrid');
+            const events = JSON.parse(localStorage.getItem('events') || '[]');
+            const today = new Date();
+
+            if (events.length === 0) {
+                eventsGrid.innerHTML = '<div class="no-events">No events available at the moment.</div>';
+                recentEventsGrid.innerHTML = '<div class="no-events">No recent events available.</div>';
+                return;
+            }
+
+            const eventCardHTML = (event, index) => {
+                const eventDate = new Date(event.date);
+                const isPastEvent = eventDate < today;
+                const isRegistered = event.registeredStudents?.some(student => 
+                    student.rollNumber === localStorage.getItem('studentRollNumber')
+                );
+
+                return `
+                    <div class="event-card">
+                        <h3>${event.name}</h3>
+                        <div class="event-details">
+                            <div class="event-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>${event.venue}</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-clock"></i>
+                                <span>${formatTime(event.time)}</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-calendar"></i>
+                                <span>${formatDate(event.date)}</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-users"></i>
+                                <span>${getEligibilityText(event.eligibility)}</span>
+                            </div>
+                        </div>
+                        <button 
+                            onclick="openRegistrationModal(${index})" 
+                            class="register-btn"
+                            ${isPastEvent || isRegistered ? 'disabled' : ''}
+                        >
+                            ${isRegistered ? 'Already Registered' : isPastEvent ? 'Event Ended' : 'Register Now'}
+                        </button>
+                    </div>
+                `;
+            };
+
+            eventsGrid.innerHTML = events.map((event, index) => eventCardHTML(event, index)).join('');
+            recentEventsGrid.innerHTML = events.slice(0, 3).map((event, index) => eventCardHTML(event, index)).join('');
+            updateStats();
+        }
+
+        // Function to check for event updates
+        function checkForEventUpdates() {
+            const lastUpdate = localStorage.getItem('lastEventUpdate');
+            if (lastUpdate) {
+                const currentTime = new Date().getTime();
+                const timeDiff = currentTime - parseInt(lastUpdate);
+                if (timeDiff < 5000) { // If update is less than 5 seconds old
+                    displayEvents();
+                    displayMyEvents();
+                    updateStats();
+                }
+            }
+        }
+
+        // Set up periodic check for updates
+        setInterval(checkForEventUpdates, 5000);
+
+        // Function to display my events
+        function displayMyEvents() {
+            const myEventsGrid = document.getElementById('myEventsGrid');
+            const events = JSON.parse(localStorage.getItem('events') || '[]');
+            const studentRollNumber = localStorage.getItem('studentRollNumber');
+            const today = new Date();
+
+            console.log('Student Roll Number:', studentRollNumber); // Debug log
+            console.log('All Events:', events); // Debug log
+
+            // Filter events where the student is registered
+            const myEvents = events.filter(event => {
+                const isRegistered = event.registeredStudents?.some(student => 
+                    student.rollNumber === studentRollNumber
+                );
+                console.log('Event:', event.name, 'Is Registered:', isRegistered); // Debug log
+                return isRegistered;
+            });
+
+            console.log('My Events:', myEvents); // Debug log
+
+            if (myEvents.length === 0) {
+                myEventsGrid.innerHTML = `
+                    <div class="no-events">
+                        <i class="fas fa-calendar-times" style="font-size: 3rem; color: #cbd5e0; margin-bottom: 1rem;"></i>
+                        <p>You haven't registered for any events yet.</p>
+                        <p style="color: #4a5568; margin-top: 0.5rem;">Check out the Events section to find interesting events to participate in!</p>
+                    </div>`;
+                return;
+            }
+
+            const eventCardHTML = (event, index) => {
+                const eventDate = new Date(event.date);
+                const isPastEvent = eventDate < today;
+                const statusClass = isPastEvent ? 'completed' : 'upcoming';
+                const statusIcon = isPastEvent ? 'fa-check-circle' : 'fa-clock';
+                const statusText = isPastEvent ? 'Event Completed' : 'Upcoming Event';
+
+                return `
+                    <div class="event-card">
+                        <h3>${event.name}</h3>
+                        <div class="event-details">
+                            <div class="event-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>${event.venue}</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-clock"></i>
+                                <span>${formatTime(event.time)}</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-calendar"></i>
+                                <span>${formatDate(event.date)}</span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="fas fa-users"></i>
+                                <span>${getEligibilityText(event.eligibility)}</span>
+                            </div>
+                        </div>
+                        <div class="event-status ${statusClass}">
+                            <i class="fas ${statusIcon}"></i>
+                            ${statusText}
+                        </div>
+                    </div>
+                `;
+            };
+
+            // Sort events by date (upcoming first, then past events)
+            myEvents.sort((a, b) => {
+                const dateA = new Date(a.date);
+                const dateB = new Date(b.date);
+                return dateA - dateB;
+            });
+
+            myEventsGrid.innerHTML = myEvents.map((event, index) => eventCardHTML(event, index)).join('');
+        }
+
+        // Function to update profile
+        function updateProfile() {
+            const studentRollNumber = localStorage.getItem('studentRollNumber');
+            const studentData = JSON.parse(localStorage.getItem('studentData') || '{}');
+            
+            if (studentData && studentData.rollNumber) {
+                document.getElementById('profileRollNumber').textContent = studentData.rollNumber;
+                document.getElementById('profileName').textContent = studentData.name;
+                document.getElementById('profileEmail').textContent = studentData.email;
+                document.getElementById('profileBranch').textContent = studentData.branch;
+                document.getElementById('profileYear').textContent = `${studentData.year}${getYearSuffix(studentData.year)} Year`;
+                document.getElementById('profileSection').textContent = studentData.section;
+                document.getElementById('studentName').textContent = studentData.name;
+            }
+        }
+
+        // Function to get year suffix
+        function getYearSuffix(year) {
+            const suffixes = ['st', 'nd', 'rd', 'th'];
+            return suffixes[year - 1] || 'th';
+        }
+
+        // Function to open registration modal
+        function openRegistrationModal(eventIndex) {
+            document.getElementById('eventId').value = eventIndex;
+            document.getElementById('registrationModal').style.display = 'block';
+        }
+
+        // Function to close registration modal
+        function closeModal() {
+            document.getElementById('registrationModal').style.display = 'none';
+        }
+
+        // Function to handle registration
+        function handleRegistration(event) {
+            event.preventDefault();
+
+            const eventIndex = document.getElementById('eventId').value;
+            const studentData = {
+                name: document.getElementById('studentName').value,
+                rollNumber: document.getElementById('rollNumber').value,
+                phoneNumber: document.getElementById('phoneNumber').value,
+                email: document.getElementById('email').value,
+                year: document.getElementById('year').value,
+                branch: document.getElementById('branch').value,
+                section: document.getElementById('section').value
+            };
+
+            // Save student data to localStorage for profile
+            localStorage.setItem('studentRollNumber', studentData.rollNumber);
+            localStorage.setItem('studentData', JSON.stringify(studentData));
+
+            // Get events from localStorage
+            let events = JSON.parse(localStorage.getItem('events') || '[]');
+            
+            // Add student to event's registered students
+            if (!events[eventIndex].registeredStudents) {
+                events[eventIndex].registeredStudents = [];
+            }
+            events[eventIndex].registeredStudents.push(studentData);
+
+            // Save updated events
+            localStorage.setItem('events', JSON.stringify(events));
+
+            // Show success message
+            const successMessage = document.createElement('div');
+            successMessage.className = 'success-message';
+            successMessage.textContent = 'Registration successful! You can now view your registered events.';
+            document.querySelector('.content-section.active').insertBefore(successMessage, document.querySelector('.events-grid'));
+
+            // Close modal
+            closeModal();
+
+            // Refresh events display
+            displayEvents();
+            displayMyEvents();
+            updateStats();
+
+            // Hide success message after 3 seconds
+            setTimeout(() => {
+                successMessage.remove();
+            }, 3000);
+        }
+
+        // Function to logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('studentRollNumber');
+                window.location.href = 'First.html';
+            }
+        }
+
+        // Display events when the page loads
+        window.onload = function() {
+            displayEvents();
+            updateProfile();
+        };
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('registrationModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html> 
