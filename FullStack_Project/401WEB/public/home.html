@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: url('/401WEB/assets/movie.jpg') no-repeat center center/cover;
+            color: white;
+            text-align: center;
+        }
+
+
+
+        .home {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .button {
+            padding: 12px 24px;
+            border: none;
+            background-color: #006BB6;
+            color: white;
+            font-size: 18px;
+            border-radius: 30px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .button:hover {
+            background-color: #ff6b6b;
+            transform: translateY(-5px);
+        }
+
+        .button:active {
+            transform: translateY(2px);
+        }
+
+        .button:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="home">
+        <h1>Welcome Home</h1>
+        <div class="buttons-container">
+            <a href="/login" class="button">Login</a>
+            <a href="/signup" class="button">Sign Up</a>
+        </div>
+    </div>
+</body>
+</html>

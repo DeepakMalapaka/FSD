@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+            background: url('/assets/movie.jpg') no-repeat center center/cover;
+            margin: 0;
+        }
+        .signup-page {
+            text-align: center;
+            border: 2px solid #000;
+            padding: 20px;
+            width: 300px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-field {
+            margin-bottom: 15px;
+        }
+        .form-field label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-field input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .form-field button {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-page">
+        <h2>Sign Up</h2>
+        <form id="signup" method="post" action="/signupSubmit" onsubmit="return validatePassword()">
+            <div class="form-field">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-field">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-field">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-field">
+                <label for="confirm-password">Confirm Password:</label>
+                <input type="password" id="confirm-password" name="confirm-password" required>
+            </div>
+            <div class="form-field">
+                <button type="submit">Sign Up</button>
+            </div>
+        </form>
+        <div id="error-message" style="color: red; margin-top: 10px;"></div>
+    </div>
+
+    <script>
+        function validatePassword() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (password !== confirmPassword) {
+                document.getElementById('error-message').textContent = '❗ Passwords do not match!';
+                return false;
+            }
+            return true;
+        }
+
+        document.getElementById('signup').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!validatePassword()) return;
+
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            delete data['confirm-password']; // Remove confirm password before sending
+
+            try {
+                const response = await fetch('/signupSubmit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    window.location.href = '/login';
+                } else {
+                    document.getElementById('error-message').textContent = result.error;
+                }
+            } catch (error) {
+                document.getElementById('error-message').textContent = 'An error occurred. Please try again.';
+            }
+        });
+    </script>
+</body>
+</html>

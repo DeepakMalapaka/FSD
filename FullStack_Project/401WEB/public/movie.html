@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Movie App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background-color: black;
+      background-image: url('/assets/movie1.jpg');
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    .container {
+      max-width: 400px;
+      margin: 100px auto;
+      padding: 20px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    }
+    input {
+      padding: 10px;
+      width: 80%;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .movie-info {
+      margin-top: 20px;
+      padding: 15px;
+      background: #e3f2fd;
+      border-radius: 5px;
+    }
+    .movie-poster {
+      max-width: 200px;
+      margin: 10px auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Movie App</h2>
+    <input type="text" id="movie" placeholder="Enter Movie name" />
+    <button onclick="getMovie()">Search Movie</button>
+    <div class="movie-info" id="movieInfo"></div>
+  </div>
+
+  <script>
+    async function getMovie() {
+      const movie = document.getElementById('movie').value.trim();
+      const apiKey = 'YOUR_OMDB_API_KEY'; // Replace with your OMDB API key
+
+      if (!movie) {
+        document.getElementById('movieInfo').innerHTML = '<p style="color:red;">❗ Please enter a movie name.</p>';
+        return;
+      }
+
+      const url = `https://www.omdbapi.com/?apikey=${apiKey}&t=${encodeURIComponent(movie)}`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.Error) {
+          document.getElementById('movieInfo').innerHTML = `<p style="color:red;">❌ Error: ${data.Error}</p>`;
+        } else {
+          let message = `
+            <h3>🎬 ${data.Title} (${data.Year})</h3>
+            <img class="movie-poster" src="${data.Poster}" alt="${data.Title} poster">
+            <p>⭐ <strong>Rating:</strong> ${data.imdbRating}/10</p>
+            <p>⏱️ <strong>Runtime:</strong> ${data.Runtime}</p>
+            <p>🎭 <strong>Genre:</strong> ${data.Genre}</p>
+            <p>👥 <strong>Cast:</strong> ${data.Actors}</p>
+            <p>📝 <strong>Plot:</strong> ${data.Plot}</p>
+          `;
+
+          document.getElementById('movieInfo').innerHTML = message;
+        }
+      } catch (error) {
+        document.getElementById('movieInfo').innerHTML = `<p style="color:red;">⚠️ Error fetching data. Please try again later.</p>`;
+        console.error('Fetch error:', error);
+      }
+    }
+  </script>
+</body>
+</html>
